@@ -2,3 +2,4 @@ venv
 src/scripts/
 src/uploads/
 src/downloads/
+test_data.csv
