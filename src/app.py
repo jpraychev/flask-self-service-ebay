@@ -1,4 +1,4 @@
-from flask import Flask, after_this_request
+from flask import Flask
 from flask import render_template
 from flask import request
 from flask import send_from_directory, send_file
@@ -6,16 +6,14 @@ from werkzeug.utils import secure_filename
 from pathlib import Path
 import subprocess
 import io
+import os
 
 app = Flask(__name__)
 upload_folder = 'tmp'
+convert_script = 'scripts/ebay_import/app.py'
 base_dir = Path(__file__).parent
 base_upload = base_dir.joinpath(upload_folder)
 
-
-# @app.route('/')
-# def index():
-#     return render_template("index.html")
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -28,11 +26,12 @@ def index():
         f = request.files.get('file-upload')
         fname = secure_filename(f.filename)
         f.save(base_upload.joinpath(fname))
-        cmd = 'python scripts/ebay_import/app.py'
+        os.chdir(base_dir)
+        cmd = f'python {convert_script}'
         try:
             subprocess.run(cmd, shell=True, check=True)
-        except:
-            raise Exception('Something went wrong')
+        except Exception as e:
+            raise Exception('Something went wrong', e)
         return render_template("success.html")
 
 @app.route('/download', methods=['GET'])
