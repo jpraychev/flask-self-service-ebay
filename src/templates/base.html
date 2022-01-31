@@ -14,14 +14,10 @@
             {% block header %}
             {% endblock %}
             <div class="row">
-                <div class="col-md-4 offset-md-4">
-                    <div class="d-flex justify-content-center">
-                        {% block content %}
-                        {% endblock %}
-                    </div>       
+                <div class="col-md-12">
+                    {% block content %}
+                    {% endblock %}
                 </div>
-                {% block add_content %}
-                {% endblock %}
             </div>
         </div>
     </div>

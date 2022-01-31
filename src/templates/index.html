@@ -6,26 +6,26 @@
 
 {% block content %}
     <form action = "http://localhost:5000" method = "POST" enctype = "multipart/form-data" style="display:inherit;">
-        <input class="form-control me-2" id="file-upload" name="file-upload" type="file" placeholder="" required>
-        <button id="file-upload" class="btn btn-outline-success" type="submit">Submit</button>
-    </form>
-{% endblock %}
-{% block add_content %}
-    <div class="col-md-4 offset-md-4 mt-4">
-        <h4> Additional parameters </h4>
+        <div class="d-flex justify-content-center col-md-4 offset-md-4">
+            <input class="form-control me-2" id="file-upload" name="file-upload" type="file" placeholder="" required>
+            <button id="file-upload" class="btn btn-outline-success" type="submit">Submit</button>                        
+        </div>
+        <h4 class="mt-2"> Additional parameters </h4>
+        <div class="col-md-12">
             <div class="mt-2">
                 Dimensions:
-                <input type="checkbox" id="cm" name="cm" value="cm" checked>
+                <input type="checkbox" id="cm" name="dimensions" value="cm" checked>
                 <label for="cm"> Centimeters <label>
-                <input type="checkbox" id="inch" name="inch" value="inch">
+                <input type="checkbox" id="inch" name="dimensions" value="inch">
                 <label for="inch"> Inches</label>
             </div>
             <div class="mt-2">
                 Template category:
-                <input type="checkbox" id="regular" name="regular" value="regular" checked>
+                <input type="checkbox" id="regular" name="category" value="regular" checked>
                 <label for="regular"> Regular rugs <label>
-                <input type="checkbox" id="kids" name="kids" value="kids">
+                <input type="checkbox" id="kids" name="category" value="kids">
                 <label for="kids"> Kids </label>
             </div>
-    </div> 
+        </div>
+    </form>
 {% endblock %}
