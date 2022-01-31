@@ -10,3 +10,22 @@
         <button id="file-upload" class="btn btn-outline-success" type="submit">Submit</button>
     </form>
 {% endblock %}
+{% block add_content %}
+    <div class="col-md-4 offset-md-4 mt-4">
+        <h4> Additional parameters </h4>
+            <div class="mt-2">
+                Dimensions:
+                <input type="checkbox" id="cm" name="cm" value="cm" checked>
+                <label for="cm"> Centimeters <label>
+                <input type="checkbox" id="inch" name="inch" value="inch">
+                <label for="inch"> Inches</label>
+            </div>
+            <div class="mt-2">
+                Template category:
+                <input type="checkbox" id="regular" name="regular" value="regular" checked>
+                <label for="regular"> Regular rugs <label>
+                <input type="checkbox" id="kids" name="kids" value="kids">
+                <label for="kids"> Kids </label>
+            </div>
+    </div> 
+{% endblock %}
