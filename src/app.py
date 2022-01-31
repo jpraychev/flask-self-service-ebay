@@ -1,5 +1,4 @@
 import io
-from multiprocessing import context
 import os
 import subprocess
 import config as cfg
@@ -7,7 +6,8 @@ from flask import Flask
 from flask import request
 from flask import send_file
 from flask import render_template
-
+from threading import Thread
+from time import sleep
 
 app = Flask(__name__)
 
@@ -28,7 +28,13 @@ def index():
             subprocess.run(cmd, shell=True, check=True)
         except Exception as e:
             raise Exception('Something went wrong', e)
+        thr = Thread(target=delete_file)
+        thr.start()
         return render_template("success.html")
+
+def delete_file():
+    sleep(cfg.download_file_timeout)
+    cfg.download_file.unlink()
 
 @app.route('/download', methods=['GET'])
 def downloads():
@@ -42,7 +48,6 @@ def downloads():
         return render_template("index.html", context=cfg.index_ctx)
 
     cfg.download_file.unlink()
-      
     return send_file(download_data, mimetype='text/csv', download_name=cfg.download_fname)
 
 if __name__ == '__main__':
