@@ -1,4 +1,5 @@
 import io
+from multiprocessing import context
 import os
 import subprocess
 import config as cfg
@@ -10,10 +11,11 @@ from flask import render_template
 
 app = Flask(__name__)
 
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'GET':
-        return render_template('index.html')
+        return render_template('index.html', context=cfg.index_ctx)
     if request.method == 'POST':
         # check if the post request has the file part
         if 'file-upload' not in request.files:
@@ -30,12 +32,17 @@ def index():
 
 @app.route('/download', methods=['GET'])
 def downloads():
-    download_data = io.BytesIO()
-    with open(cfg.download_file, 'rb') as f:
-        download_data.write(f.read())
-        download_data.seek(0)
+
+    try:
+        with open(cfg.download_file, 'rb') as f:
+            download_data = io.BytesIO()
+            download_data.write(f.read())
+            download_data.seek(0)
+    except FileNotFoundError:
+        return render_template("index.html", context=cfg.index_ctx)
 
     cfg.download_file.unlink()
+      
     return send_file(download_data, mimetype='text/csv', download_name=cfg.download_fname)
 
 if __name__ == '__main__':
