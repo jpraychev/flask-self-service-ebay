@@ -9,10 +9,16 @@ import io
 import os
 
 app = Flask(__name__)
-upload_folder = 'tmp'
+upload_folder = 'uploads'
+download_folder = 'downloads'
+download_fname = 'ebay_export.csv'
+upload_fname = 'shopify_import.csv'
 convert_script = 'scripts/ebay_import/app.py'
 base_dir = Path(__file__).parent
-base_upload = base_dir.joinpath(upload_folder)
+# upload_dir = base_dir.joinpath(upload_folder)
+uploaded_file = base_dir.joinpath(upload_folder, upload_fname)
+download_file = base_dir.joinpath(download_folder, download_fname)
+# download_dir = base_dir.joinpath('download/ebay_import.csv')
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -25,7 +31,7 @@ def index():
             return
         f = request.files.get('file-upload')
         fname = secure_filename(f.filename)
-        f.save(base_upload.joinpath(fname))
+        f.save(uploaded_file)
         os.chdir(base_dir)
         cmd = f'python {convert_script}'
         try:
@@ -35,15 +41,14 @@ def index():
         return render_template("success.html")
 
 @app.route('/download', methods=['GET'])
-def download_file():
-    download_file = base_dir.joinpath('download/main.csv')
+def downloads():
     download_data = io.BytesIO()
     with open(download_file, 'rb') as f:
         download_data.write(f.read())
         download_data.seek(0)
 
     download_file.unlink()
-    return send_file(download_data, mimetype='text/csv', download_name='main.csv')
+    return send_file(download_data, mimetype='text/csv', download_name=download_fname)
 
 if __name__ == '__main__':
     app.run(debug=True)
