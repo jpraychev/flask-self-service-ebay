@@ -1,15 +1,14 @@
-from flask import Flask
-from flask import render_template
-from flask import request
-from flask import send_from_directory, send_file
-from werkzeug.utils import secure_filename
-import subprocess
 import io
 import os
+import subprocess
 import config as cfg
+from flask import Flask
+from flask import request
+from flask import send_file
+from flask import render_template
+
+
 app = Flask(__name__)
-
-
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -40,5 +39,4 @@ def downloads():
     return send_file(download_data, mimetype='text/csv', download_name=cfg.download_fname)
 
 if __name__ == '__main__':
-    app.run(debug=True)
-    # app.run(host='0.0.0.0')
+    app.run(host='127.0.0.1', port=5000, debug=True)

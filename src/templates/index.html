@@ -2,10 +2,11 @@
 
 {% block header %}
     <h3 class="mt-4 mb-4">Self service ebay converter</h3>
+    
 {% endblock %}
 
 {% block content %}
-    <form action = "http://localhost:5000" method = "POST" enctype = "multipart/form-data" style="display:inherit;">
+    <form action = "{{ request.url }}" method = "POST" enctype = "multipart/form-data" style="display:inherit;">
         <div class="d-flex justify-content-center col-md-4 offset-md-4">
             <input class="form-control me-2" id="file-upload" name="file-upload" type="file" placeholder="" required>
             <button id="file-upload" class="btn btn-outline-success" type="submit">Submit</button>                        
