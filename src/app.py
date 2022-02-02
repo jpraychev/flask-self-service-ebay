@@ -2,7 +2,7 @@ import io
 import os
 import subprocess
 import config as cfg
-from flask import Flask, render_template, redirect, url_for
+from flask import Flask, render_template, redirect, url_for, make_response
 from flask import request
 from flask import send_file
 from flask import render_template
@@ -28,26 +28,33 @@ def index():
             subprocess.run(cmd, shell=True, check=True)
         except Exception as e:
             raise Exception('Something went wrong', e)
-        # thr = Thread(target=delete_file)
-        # thr.start()
-        return render_template("success.html", context=cfg.index_ctx)
+        Thread(target=delete_file).start()
+        resp = make_response(render_template('success.html', context=cfg.index_ctx))
+        resp.set_cookie(key='download', value='True', max_age=60)
+        return resp
 
 def delete_file():
     sleep(cfg.download_file_timeout)
     cfg.download_file.unlink()
 
 @app.route('/download', methods=['GET'])
-def downloads():
+def download():
 
-    try:
-        with open(cfg.download_file, 'rb') as f:
-            download_data = io.BytesIO()
-            download_data.write(f.read())
-            download_data.seek(0)
-    except FileNotFoundError:
-        return redirect(url_for('index'))
-
-    cfg.download_file.unlink()
+    if request.method == 'GET':     
+        download_allowed = request.cookies.get('download')
+        if not download_allowed:
+            """ Download is not allowed because the cookie was never set 
+                Redire the user to index page instead. """
+            return 'You are not allowed to access this page directly!'
+            return redirect(url_for('index'))
+        try:
+            with open(cfg.download_file, 'rb') as f:
+                download_data = io.BytesIO()
+                download_data.write(f.read())
+                download_data.seek(0)
+        except FileNotFoundError:
+            return "File has been already deleted. Please generate new one!"
+            return redirect(url_for('index'))
     return send_file(download_data, mimetype='text/csv', download_name=cfg.download_fname)
 
 if __name__ == '__main__':
