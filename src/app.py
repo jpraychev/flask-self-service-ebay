@@ -2,7 +2,7 @@ import io
 import os
 import subprocess
 import config as cfg
-from flask import Flask
+from flask import Flask, render_template, redirect, url_for
 from flask import request
 from flask import send_file
 from flask import render_template
@@ -28,8 +28,8 @@ def index():
             subprocess.run(cmd, shell=True, check=True)
         except Exception as e:
             raise Exception('Something went wrong', e)
-        thr = Thread(target=delete_file)
-        thr.start()
+        # thr = Thread(target=delete_file)
+        # thr.start()
         return render_template("success.html", context=cfg.index_ctx)
 
 def delete_file():
@@ -45,7 +45,7 @@ def downloads():
             download_data.write(f.read())
             download_data.seek(0)
     except FileNotFoundError:
-        return render_template("index.html", context=cfg.index_ctx)
+        return redirect(url_for('index'))
 
     cfg.download_file.unlink()
     return send_file(download_data, mimetype='text/csv', download_name=cfg.download_fname)
