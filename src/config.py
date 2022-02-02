@@ -11,5 +11,6 @@ download_file = base_dir.joinpath(download_folder, download_fname)
 download_file_timeout = 60
 
 index_ctx = {
-    'base_url' : 'http://localhost:5000'
+    'base_url' : 'http://localhost:5000',
+    'base_download_url' : 'http://localhost:5000/download'
 }

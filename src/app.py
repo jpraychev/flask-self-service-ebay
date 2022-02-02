@@ -30,7 +30,7 @@ def index():
             raise Exception('Something went wrong', e)
         thr = Thread(target=delete_file)
         thr.start()
-        return render_template("success.html")
+        return render_template("success.html", context=cfg.index_ctx)
 
 def delete_file():
     sleep(cfg.download_file_timeout)
