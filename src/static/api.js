@@ -1,13 +1,20 @@
+/** 
+* @summary Update HTML element with id of note, after file is being deleted from the system
+*/
+const udpateNote = () => {
+    $('#note').html('Note: file has been deleted')
+}
+
 /**
 * @summary Download countdown timer.
 * @param {int} step - Decrease step of the countdown timer
 */
-
 const downloadCountdown = (step) => {
     timer = $('#download_timer')
     currTime = parseInt(timer.html())
     timer.html(currTime - step)
     if (currTime <= 1) {
+        udpateNote()
         clearInterval(timerInterval);
     } 
 }
