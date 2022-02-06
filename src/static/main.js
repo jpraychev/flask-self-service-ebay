@@ -18,7 +18,7 @@ const downloadCountdown = (step) => {
     if (currTime <= 1) {
         udpateNote()
         clearInterval(timerInterval)
-        windows.location.href = '/'
+        window.location.href = '/'
     } 
 }
 const timerInterval = setInterval(downloadCountdown, 1000, 1)
