@@ -15,17 +15,21 @@
         <div class="col-md-12">
             <div class="mt-2">
                 Dimensions:
-                <input type="checkbox" id="cm" name="dimensions" value="cm" checked>
+                <input type="radio" id="cm" name="dimension" value="cm" checked>
                 <label for="cm"> Centimeters <label>
-                <input type="checkbox" id="inch" name="dimensions" value="inch">
-                <label for="inch"> Inches</label>
+                <input type="radio" id="cm_inch" name="dimension" value="cm_inch">
+                <label for="cm_inch"> Centimeters & Inches</label>
             </div>
             <div class="mt-2">
                 Template category:
-                <input type="checkbox" id="regular" name="category" value="regular" checked>
-                <label for="regular"> Regular rugs <label>
-                <input type="checkbox" id="kids" name="category" value="kids">
+                <input type="radio" id="regular" name="category" value="regular" checked>
+                <label for="regular"> Regular <label>
+                <input type="radio" id="kids" name="category" value="kids">
                 <label for="kids"> Kids </label>
+            </div>
+            <div class="mt-2">
+                Dry run:
+                <input type="checkbox" id="dry_run" name="dry_run" value="True" checked>
             </div>
         </div>
     </form>
