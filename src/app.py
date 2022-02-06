@@ -10,8 +10,10 @@ from flask import send_file, url_for
 
 from threading import Thread
 from time import sleep
-
+from collections import namedtuple
 from werkzeug.wrappers import Response
+
+from typing import Tuple
 
 app = Flask(__name__)
 
@@ -34,23 +36,40 @@ def index() -> "Response":
     if request.method == 'POST':
         if 'file-upload' not in request.files:
             return
-        
         f = request.files.get('file-upload')
         f.save(cfg.uploaded_file)
         os.chdir(cfg.base_dir)
+        form_data = get_form_data(request)
         
-        cmd = f'python {cfg.convert_script}'
+        cmd = f'python {cfg.convert_script}\
+        --dimension {form_data.dimension}\
+        --category {form_data.category}\
+        --dry_run {form_data.dry_run}'
         try:
             subprocess.run(cmd, shell=True, check=True)
         except Exception as e:
             raise Exception('Something went wrong', e)
-        
         Thread(target=delete_file).start()
         
         resp = make_response(render_template('success.html', context=cfg.index_ctx))
         resp.set_cookie(key='download', value='True', max_age=60)
         return resp
 
+def get_form_data(req) -> namedtuple:
+    """Get data from a passed HTTP requests. We assume that the request contains
+    correct form data.
+
+    Returns:
+        [namedtuple]: Returns form data packed in a namedtuple
+    """
+    dimensions = req.form.get('dimension')
+    category = req.form.get('category')
+    dry_run = bool(req.form.get('dry_run'))
+
+    data = namedtuple('FormData', 'dimension, category, dry_run')
+    form_data = data(dimensions, category, dry_run)
+    return form_data
+    
 def delete_file():
     sleep(cfg.download_file_timeout)
     cfg.download_file.unlink()
