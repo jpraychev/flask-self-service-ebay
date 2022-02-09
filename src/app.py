@@ -7,6 +7,9 @@ import config as cfg
 from flask import Flask, render_template, redirect
 from flask import request, make_response
 from flask import send_file, url_for
+from werkzeug.security import check_password_hash
+from flask_httpauth import HTTPBasicAuth
+import ebay_secret
 
 from threading import Thread
 from time import sleep
@@ -16,8 +19,17 @@ from werkzeug.wrappers import Response
 from typing import Tuple
 
 app = Flask(__name__)
+auth = HTTPBasicAuth()
+
+
+@auth.verify_password
+def verify_password(username, password):
+    if username in ebay_secret.users and \
+            check_password_hash(ebay_secret.users.get(username), password):
+        return username
 
 @app.route('/', methods=['GET', 'POST'])
+@auth.login_required
 def index() -> "Response":
     """ Upon file uploading, convert the file from shopify to ebay format.
         If successful sets a cookie with name 'download', which tracks users
