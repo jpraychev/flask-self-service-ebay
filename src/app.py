@@ -49,7 +49,7 @@ def index() -> "Response":
         os.chdir(cfg.base_dir)
         form_data = get_form_data(request)
         
-        cmd = f'python {cfg.convert_script}\
+        cmd = f'python3 {cfg.convert_script}\
         --dimension {form_data.dimension}\
         --category {form_data.category}\
         --dry_run {form_data.dry_run}'
@@ -111,4 +111,4 @@ def download() -> io.BytesIO:
     return send_file(download_data, mimetype='text/csv', download_name=cfg.download_fname)
 
 if __name__ == '__main__':
-    app.run(host='127.0.0.1', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)
