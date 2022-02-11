@@ -111,4 +111,7 @@ def download() -> io.BytesIO:
     return send_file(download_data, mimetype='text/csv', download_name=cfg.download_fname)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(
+        host='0.0.0.0',
+        port=cfg.SERVER_PORT,
+        debug=cfg.DEBUG)
