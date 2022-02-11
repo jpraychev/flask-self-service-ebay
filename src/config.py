@@ -18,6 +18,6 @@ DEBUG = True
 
 # Template context
 index_ctx = {
-    'base_url' : f'http://{SERVER_IP}:5000',
-    'base_download_url' : f'http://{SERVER_IP}:5000/download'
+    'base_url' : f'http://{SERVER_IP}:{SERVER_PORT}',
+    'base_download_url' : f'http://{SERVER_IP}:{SERVER_PORT}/download'
 }
