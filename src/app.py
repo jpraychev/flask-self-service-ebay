@@ -111,6 +111,12 @@ def download() -> io.BytesIO:
     return send_file(download_data, mimetype='text/csv', download_name=cfg.download_fname)
 
 if __name__ == '__main__':
+    """This section of the code won't be run unless we start it as as script
+    The preferable way to start the service is to run in through gunicorn, for example:
+    gunicorn app:app -b 127.0.0.1:5000 --daemon
+    The above command will start the service as a daemon and listen on the specified socket
+    Please also change the socket info in config.py according to your needs
+    """
     app.run(
         host='0.0.0.0',
         port=cfg.SERVER_PORT,
