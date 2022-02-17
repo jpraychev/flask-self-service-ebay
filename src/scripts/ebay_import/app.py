@@ -75,10 +75,14 @@ def get_title(row) -> str:
     return flat_title
 
 def get_images(row) -> str:
-    urls = [
-        'https://rugsdropshipping.uk/wp-content/uploads/export/xrug/xrug_five.jpg',
-        'https://rugsdropshipping.uk/wp-content/uploads/export/xrug/xrug_size.jpg'
-    ]
+    if ACCOUNT == 'xrug':
+        urls = [
+            'https://rugsdropshipping.uk/wp-content/uploads/export/xrug/xrug_five.jpg',
+            'https://rugsdropshipping.uk/wp-content/uploads/export/xrug/xrug_size.jpg'
+        ]
+    else:
+        urls = ['https://www.rugsdropshipping.uk/wp-content/uploads/export/xrug/magicrug.jpg']
+
     images = row[1].to_dict()['Image Src']
     flat_images = [val for val in images if val is not np.NaN]
     [flat_images.append(url) for url in urls]
@@ -320,10 +324,12 @@ if __name__ == '__main__':
     dim = sys.argv[sys.argv.index('--dimension')+1]
     cat = sys.argv[sys.argv.index('--category')+1]
     dry_run = sys.argv[sys.argv.index('--dry_run')+1]
-    
+    acc = sys.argv[sys.argv.index('--account')+1]
+
     INCH_FLAG = True if 'inch' in dim else False
     CAT = 'regular' if cat == 'regular' else 'kids'
     DRY_RUN = dry_run
+    ACCOUNT = acc
 
     curr = Path(__file__).resolve().parent
     ean_txt = curr.joinpath('ean/ean.txt')

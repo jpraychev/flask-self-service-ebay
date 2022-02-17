@@ -52,7 +52,8 @@ def index() -> "Response":
         cmd = f'python3 {cfg.convert_script}\
         --dimension {form_data.dimension}\
         --category {form_data.category}\
-        --dry_run {form_data.dry_run}'
+        --dry_run {form_data.dry_run}\
+        --account {form_data.account}'
         try:
             subprocess.run(cmd, shell=True, check=True)
         except Exception as e:
@@ -73,9 +74,10 @@ def get_form_data(req) -> namedtuple:
     dimensions = req.form.get('dimension')
     category = req.form.get('category')
     dry_run = bool(req.form.get('dry_run'))
-
-    data = namedtuple('FormData', 'dimension, category, dry_run')
-    form_data = data(dimensions, category, dry_run)
+    account = req.form.get('account')
+    
+    data = namedtuple('FormData', 'dimension, category, dry_run, account')
+    form_data = data(dimensions, category, dry_run, account)
     return form_data
     
 def delete_file():
