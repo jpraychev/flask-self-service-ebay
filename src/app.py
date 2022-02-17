@@ -120,6 +120,6 @@ if __name__ == '__main__':
     Please also change the socket info in config.py according to your needs
     """
     app.run(
-        host='0.0.0.0',
+        host=cfg.SERVER_IP,
         port=cfg.SERVER_PORT,
         debug=cfg.DEBUG)

@@ -12,9 +12,10 @@ download_file = base_dir.joinpath(download_folder, download_fname)
 download_file_timeout = 60
 
 # Service variables
-SERVER_IP = 'localhost'
+DEV_ENV = True
+SERVER_IP = 'localhost' if DEV_ENV else '192.46.239.37'
 SERVER_PORT = 5000
-DEBUG = True
+DEBUG = True if DEV_ENV else False
 
 # Template context
 index_ctx = {
