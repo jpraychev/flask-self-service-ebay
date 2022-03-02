@@ -1,5 +1,5 @@
 venv
-# src/scripts/
 src/uploads/shopify_import.csv
-src/downloads/
 src/__pycache__
+src/scripts/ebay_import/__pycache__
+src/scripts/ebay_import/ean/__pycache__
