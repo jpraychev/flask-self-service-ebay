@@ -246,7 +246,17 @@ def category(cat_type):
         return categories[cat_type.lower()]
     except KeyError:
         raise ValueError('No such category. Supported categories: Regular (45510) and Kids (177062).')
-        
+
+def get_brand(acc:str) -> str:
+    """ Returns one of the brands defined in brands list. If not found raise
+        value error """
+
+    brands = ['xrug', 'magicrug']
+
+    if acc in brands:
+        return acc.title()
+    raise ValueError(f'{acc} is not supported. Supported brand xrug and magicrug')
+
 def export_main_rows(df2):
 
     main_row = MainRow(header)
@@ -276,6 +286,7 @@ def export_main_rows(df2):
         header["C:Item Length"].append(length)
         header["C:MPN"].append(mpn)
         header["C:Model"].append(model)
+        header["C:Brand"].append(get_brand(ACCOUNT))
 
         main_row.add_empty()
         main_row.add_static()
@@ -327,7 +338,7 @@ if __name__ == '__main__':
     acc = sys.argv[sys.argv.index('--account')+1]
 
     INCH_FLAG = True if 'inch' in dim else False
-    CAT = 'regular' if cat == 'regular' else 'kids'
+    CAT = cat
     DRY_RUN = dry_run
     ACCOUNT = acc
 

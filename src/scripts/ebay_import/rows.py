@@ -53,7 +53,6 @@ class MainRow(Row):
         "Shipping profile name" : "Kilim 24 ( 3-5 working days )",
         "Return profile name" : "Returns Accepted,Buyer,30 days",
         "Payment profile name" : "PayPal:Immediate pay#0",
-        "C:Brand" : "Xrug",
         "C:Type" : "Rug",
         "C:Regional Design" : "English",
         "Max dispatch time" : "3"}
