@@ -50,9 +50,6 @@ class MainRow(Row):
         "Duration" : "GTC",
         "VAT%" : "20",
         "Location" : "Wyboston, Beds",
-        "Shipping profile name" : "Kilim 24 ( 3-5 working days )",
-        "Return profile name" : "Returns Accepted,Buyer,30 days",
-        "Payment profile name" : "PayPal:Immediate pay#0",
         "C:Type" : "Rug",
         "C:Regional Design" : "English",
         "Max dispatch time" : "3"}

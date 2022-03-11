@@ -10,7 +10,6 @@ from material import Material
 import re
 from pathlib import Path
 
-
 def drop_attr(string):
     """ Drops Color_ and Size_ attributes from a string using a regex expression.
     This function replaces usage of multiple replace() calls """
@@ -257,6 +256,28 @@ def get_brand(acc:str) -> str:
         return acc.title()
     raise ValueError(f'{acc} is not supported. Supported brand xrug and magicrug')
 
+def business_policies(account:str) -> dict[str, str]:
+    """ Return dict of business policies (Shipping, Return and Payment) based on 
+        user provided input. """
+
+    policies = {
+        'xrug' : {
+            'shipping' : 'Kilim 24 ( 3-5 working days )',
+            'returns' : 'Returns Accepted,Buyer,30 days',
+            'payment' : 'PayPal:Immediate pay#0'
+        },
+        'magicrug' : {
+            'shipping' : 'Rug 24 delivery,3 working days',
+            'returns' : 'Returns Accepted,Seller,30 days#0',
+            'payment' : 'PayPal:Immediate pay#2'
+        }
+    }
+
+    try:
+        return policies[account]
+    except KeyError:
+        raise ValueError(f'{account} is not support. Supported brand xrug and magicrug')
+
 def export_main_rows(df2):
 
     main_row = MainRow(header)
@@ -273,6 +294,7 @@ def export_main_rows(df2):
         model, mpn = get_model_mpn(title)
         depart = get_department(title)
         material = get_material(row)
+        policies = business_policies(ACCOUNT)
         header['Category ID'].append(category(CAT))
         header['Relationship details'].append(details)
         header['Title'].append(title)
@@ -287,6 +309,9 @@ def export_main_rows(df2):
         header["C:MPN"].append(mpn)
         header["C:Model"].append(model)
         header["C:Brand"].append(get_brand(ACCOUNT))
+        header["Shipping profile name"].append(policies['shipping'])
+        header["Return profile name"].append(policies['returns'])
+        header["Payment profile name"].append(policies['payment'])
 
         main_row.add_empty()
         main_row.add_static()
