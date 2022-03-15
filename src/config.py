@@ -11,6 +11,12 @@ uploaded_file = base_dir.joinpath(upload_folder, upload_fname)
 download_file = base_dir.joinpath(download_folder, download_fname)
 download_file_timeout = 60
 
+# Python runtime
+python_runtime = {
+    'linux' : 'python3',
+    'win32' : 'python'
+}
+
 # Service variables
 DEV_ENV = True
 SERVER_IP = 'localhost' if DEV_ENV else '192.46.239.37'

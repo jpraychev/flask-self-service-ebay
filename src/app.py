@@ -1,5 +1,6 @@
 import io
 import os
+import sys
 import subprocess
 import config as cfg
 from flask import Flask, render_template, redirect
@@ -49,7 +50,12 @@ def index() -> "Response":
         os.chdir(cfg.base_dir)
         form_data = get_form_data(request)
         
-        cmd = f'python3 {cfg.convert_script}\
+        try:
+            runtime = cfg.python_runtime[sys.platform]
+        except KeyError:
+            raise ValueError('Unknown python runtime platform')
+
+        cmd = f'{runtime} {cfg.convert_script}\
         --dimension {form_data.dimension}\
         --category {form_data.category}\
         --dry_run {form_data.dry_run}\
