@@ -186,7 +186,9 @@ def get_desc_list(row):
     desc_list = list_items.replace('<li>', start_p).replace('</li>', end_p)
     return desc_list
 
-def replace_html(title:str, desc_list:str):
+def rug_category(title:str) -> str:
+    """ Determine the rugs category based on its title """
+
     lower_title = title.lower()
 
     if 'kitchen' in lower_title:
@@ -198,12 +200,26 @@ def replace_html(title:str, desc_list:str):
     else:
         cat = 'livingroom'
 
-    full_html = html_template['full']
+    return cat
+
+def replace_html(title:str, desc_list:str) -> str:
+    """ Builds a dynamic HTML template for particular category of rugs. """
+    
+    cat = rug_category(title)
+    
+    try:
+        full_html = html_template['full']['xrug']
+        if ACCOUNT == 'magicrug':
+            full_html = html_template['full']['magicrug']
+    except KeyError:
+        raise ValueError('Invalid account used for html template retrieval.')
+
+
     cat_html = html_template[cat]
     html = full_html.replace('__RUG_DESC_FULL', cat_html)
-    title_ph = '__RUG_TITLE'
-    desc_ph = '__RUG_DESC_LIST'
-    return html.replace(title_ph, title).replace(desc_ph, desc_list)
+    title_placeholder = '__RUG_TITLE'
+    desc_placeholder = '__RUG_DESC_LIST'
+    return html.replace(title_placeholder, title).replace(desc_placeholder, desc_list)
 
 def get_model_mpn(product_title:str) -> str:
     title = product_title.lower()
