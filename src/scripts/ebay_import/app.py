@@ -272,7 +272,7 @@ def get_brand(acc:str) -> str:
         return acc.title()
     raise ValueError(f'{acc} is not supported. Supported brand xrug and magicrug')
 
-def business_policies(account:str) -> dict[str, str]:
+def business_policies(account:str):
     """ Return dict of business policies (Shipping, Return and Payment) based on 
         user provided input. """
 
