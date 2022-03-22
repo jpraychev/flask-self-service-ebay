@@ -60,10 +60,16 @@ def index() -> "Response":
         --category {form_data.category}\
         --dry_run {form_data.dry_run}\
         --account {form_data.account}'
-        try:
-            subprocess.run(cmd, shell=True, check=True)
-        except Exception as e:
-            raise Exception('Something went wrong', e)
+
+        from subprocess import Popen, PIPE
+        p = Popen(cmd, stdout=PIPE, stderr=PIPE)
+        out, err = p.communicate()
+        print(out)
+        print(err)
+        # try:
+            # subprocess.run(cmd, shell=True, check=True)
+        # except Exception as e:
+            # raise Exception('Something went wrong', e)
         Thread(target=delete_file).start()
         
         resp = make_response(render_template('success.html', context=cfg.index_ctx))
