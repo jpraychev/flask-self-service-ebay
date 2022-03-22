@@ -24,7 +24,7 @@ def size_cm_to_ft(sizes):
         sizes = sizes.split(',')
 
     for size in sizes:
-        size = size.strip()
+        size = size.strip().lower()
         if 'x' in size:
             splitted = size.replace('cm','').split('x')
             w_cm, l_cm = splitted[0], splitted[1]
