@@ -61,7 +61,7 @@ def index() -> "Response":
         --dry_run {form_data.dry_run}\
         --account {form_data.account}'
 
-        p = Popen(cmd, stderr=PIPE, universal_newlines=True)
+        p = Popen(cmd, shell=True, stderr=PIPE, universal_newlines=True)
         stdout, stderr = p.communicate()
         if stderr:
             err_msg = parse_err_msg(stderr)
@@ -80,7 +80,7 @@ def parse_err_msg(err_msg:str) -> str:
         - err_msg list contains the actual error message at index 1.
         - Only ValueError exception is supported! 
     """
-    
+
     supported_errs = ['ValueError']
     sep = ':'
     split_at = supported_errs[0] + sep

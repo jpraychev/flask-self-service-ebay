@@ -10,10 +10,10 @@ from material import Material
 import re
 from pathlib import Path
 
-def drop_attr(string):
+def drop_attr(string) -> str:
     """ Drops Color_ and Size_ attributes from a string using a regex expression.
     This function replaces usage of multiple replace() calls """
-    txt = re.sub('(Size_)|(Color_)', '', string)
+    txt = re.sub('Size_|Color_', '', string)
     sep_txt = txt.replace(',', ';', 1)
     return sep_txt
 
@@ -25,17 +25,20 @@ def size_cm_to_ft(sizes):
 
     for size in sizes:
         size = size.strip().lower()
-        if 'x' in size:
-            splitted = size.replace('cm','').split('x')
-            w_cm, l_cm = splitted[0], splitted[1]
-            w_ft, l_ft = cm_to_foot[w_cm], cm_to_foot[l_cm]
-            string = f'{w_cm}x{l_cm}cm ({w_ft}x{l_ft})'
-            temp_arr.append(string)
-        else:
-            splitted = size.split('cm')
-            size_cm, size_type = splitted[0].strip(), splitted[1].strip()
-            string = f'{size_cm}cm ({cm_to_foot[size_cm]}) {size_type.capitalize()}'
-            temp_arr.append(string)
+        try:
+            if 'x' in size:
+                splitted = size.replace('cm','').split('x')
+                w_cm, l_cm = splitted[0], splitted[1]
+                w_ft, l_ft = cm_to_foot[w_cm], cm_to_foot[l_cm]
+                string = f'{w_cm}x{l_cm}cm ({w_ft}x{l_ft})'
+                temp_arr.append(string)
+            else:
+                splitted = size.split('cm')
+                size_cm, size_type = splitted[0].strip(), splitted[1].strip()
+                string = f'{size_cm}cm ({cm_to_foot[size_cm]}) {size_type.capitalize()}'
+                temp_arr.append(string)
+        except KeyError:
+            raise ValueError(f'{size} is not supported.')
 
     return temp_arr
 
@@ -46,19 +49,20 @@ def get_relation_details(row) -> str:
     - Size_120x170cm;
     - Size_200 cm round;
     - Size_200cm round;
+    Note:
+        - flat_tags[0] contains all tags as a single string
     """
 
     tags = row[1].to_dict()['Tags']
     flat_tags = [tag.replace(' cm', 'cm') for tag in tags if tag is not np.NaN]
-    joined_flat_tags = ','.join(flat_tags)
+    sizes = flat_tags[0].split(',')[1:]
 
-    if not 'cm' in joined_flat_tags:
-        raise ValueError('"cm" is missing for product size')
+    if not all('cm' in i for i in sizes):
+        raise ValueError(f'cm is missing for following sizes: {sizes}')
 
-    flat_wo_tags = drop_attr(joined_flat_tags).split(';')
+    flat_wo_tags = drop_attr(flat_tags[0]).split(';')
     color = flat_wo_tags[0].strip()
-    size = flat_wo_tags[1].strip()
-    
+    size = flat_wo_tags[1].strip().lower()
     if INCH_FLAG:
         sizes_ft = size_cm_to_ft(size)
         size = ', '.join(sizes_ft)
@@ -70,7 +74,7 @@ def get_title(row) -> str:
     title = row[1].to_dict()['Title']
     flat_title = [val for val in title if val is not np.NaN][0]
     if len(flat_title) > 80:
-        raise ValueError("Title's length has to be below 80 characters\n", flat_title, len(flat_title))
+        raise ValueError(f'Maximum title length of 80 characters exceeded. Product {flat_title} has {len(flat_title)} characters.')
     return flat_title
 
 def get_images(row) -> str:
@@ -118,10 +122,10 @@ def get_sizes(row, s_type=None):
     """
 
     sizes = row[1].to_dict()['Option1 Value']
+    flat_size = [size.lower() for size in sizes if size is not np.NaN]
 
-    flat_size = [size for size in sizes if size is not np.NaN]
-    if not 'cm' in ','.join(flat_size):
-        raise ValueError('"cm" is missing for product size')
+    if not all('cm' in i for i in flat_size):
+        raise ValueError(f'cm is missing for following sizes: {flat_size}')
 
     cm_size = [size.replace(' cm','cm') for size in flat_size]
     if s_type is not None:
@@ -140,12 +144,10 @@ def get_single_variation(row):
     return temp_arr
 
 def get_ean() -> int:
-    if isinstance(DRY_RUN, str):
-        dr = eval(DRY_RUN)
-    if dr:
+    if DRY_RUN == 'True':
         return 123456789
-    # if len(ean.unused_numbers) < 100:
-        # raise ValueError('EAN numbers are less than 100.')
+    if len(EAN_NUMS) < 100:
+        raise ValueError('Less than 100 EAN numbers left in the pool. Please generate more.')
     num = EAN_NUMS.pop()
     return num 
 
@@ -260,17 +262,17 @@ def category(cat_type):
     try:
         return categories[cat_type.lower()]
     except KeyError:
-        raise ValueError('No such category. Supported categories: Regular (45510) and Kids (177062).')
+        raise ValueError(f'{cat_type} does not exist. Supported categories: Regular (45510) and Kids (177062).')
 
-def get_brand(acc:str) -> str:
+def get_brand(account:str) -> str:
     """ Returns one of the brands defined in brands list. If not found raise
         value error """
 
     brands = ['xrug', 'magicrug']
 
-    if acc in brands:
-        return acc.title()
-    raise ValueError(f'{acc} is not supported. Supported brand xrug and magicrug')
+    if account in brands:
+        return account.title()
+    raise ValueError(f'{account} is not supported. Supported accounts: xrug and magicrug')
 
 def business_policies(account:str):
     """ Return dict of business policies (Shipping, Return and Payment) based on 
@@ -292,7 +294,7 @@ def business_policies(account:str):
     try:
         return policies[account]
     except KeyError:
-        raise ValueError(f'{account} is not support. Supported brand xrug and magicrug')
+        raise ValueError(f'{account} is not supported. Supported accounts: xrug and magicrug')
 
 def export_main_rows(df2):
 
