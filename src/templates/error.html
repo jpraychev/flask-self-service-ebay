@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block header %}
+    <h3 class="mt-4 mb-4">An error has occured during file conversion. Please provide the error message to site admin. </h3>
+{% endblock %}
+
+{% block content %}
+    {{ context.err_msg }}
+{% endblock %}

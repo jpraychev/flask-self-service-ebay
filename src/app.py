@@ -1,7 +1,7 @@
 import io
 import os
 import sys
-import subprocess
+from subprocess import Popen, PIPE
 import config as cfg
 from flask import Flask, render_template, redirect
 from flask import request, make_response
@@ -61,20 +61,31 @@ def index() -> "Response":
         --dry_run {form_data.dry_run}\
         --account {form_data.account}'
 
-        from subprocess import Popen, PIPE
-        p = Popen(cmd, stdout=PIPE, stderr=PIPE)
-        out, err = p.communicate()
-        print(out)
-        print(err)
-        # try:
-            # subprocess.run(cmd, shell=True, check=True)
-        # except Exception as e:
-            # raise Exception('Something went wrong', e)
+        p = Popen(cmd, stderr=PIPE, universal_newlines=True)
+        stdout, stderr = p.communicate()
+        if stderr:
+            err_msg = parse_err_msg(stderr)
+            return render_template('error.html', context={"err_msg": err_msg})
+
         Thread(target=delete_file).start()
         
         resp = make_response(render_template('success.html', context=cfg.index_ctx))
         resp.set_cookie(key='download', value='True', max_age=60)
         return resp
+
+def parse_err_msg(err_msg:str) -> str:
+    """ Parses error messages returned from POPEN.
+    Returns error message in a human readable format 
+    Note:
+        - err_msg list contains the actual error message at index 1.
+        - Only ValueError exception is supported! 
+    """
+    
+    supported_errs = ['ValueError']
+    sep = ':'
+    split_at = supported_errs[0] + sep
+    msg = err_msg.split(split_at)[1].strip()
+    return msg
 
 def get_form_data(req) -> namedtuple:
     """Get data from a passed HTTP requests. We assume that the request contains
