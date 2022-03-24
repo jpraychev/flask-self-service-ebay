@@ -5,5 +5,10 @@
 {% endblock %}
 
 {% block content %}
-    {{ context.err_msg }}
+    <div>
+        {{ context.err_msg }}
+    </div>
+    <div class="mt-4">
+        <a class="btn btn-outline-primary" href="http://localhost:5000">Back Home</a>
+    </div>
 {% endblock %}
