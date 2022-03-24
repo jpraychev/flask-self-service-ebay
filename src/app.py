@@ -65,7 +65,8 @@ def index() -> "Response":
         stdout, stderr = p.communicate()
         if stderr:
             err_msg = parse_err_msg(stderr)
-            return render_template('error.html', context={"err_msg": err_msg})
+            cfg.index_ctx['err_msg'] = err_msg
+            return render_template('error.html', context=cfg.index_ctx)
 
         Thread(target=delete_file).start()
         
