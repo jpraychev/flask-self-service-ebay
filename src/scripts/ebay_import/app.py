@@ -156,8 +156,8 @@ def get_width_length(row):
     sizes = [size.replace(' ','') for size in sizes if size is not np.NaN]
     w = [f"{size.split('x')[0]}cm" for size in sizes if 'x' in size]
     l = [size.split('x')[1] for size in sizes if 'x' in size]
-    widths = (', ').join(w)
-    lengths = (', ').join(l)
+    widths = (',').join(w)
+    lengths = (',').join(l)
     if len(widths) > 65 or len(lengths) > 65:
         raise ValueError("Maximum allowed 65 characters for lengths/widths is exceeded.")
     return widths, lengths
